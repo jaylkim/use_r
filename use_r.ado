@@ -24,12 +24,13 @@ This command does the following:
 
 5. Saves figures tables.
 
-6. Returns one _data.frame_ object on memory and other objects as local macros.
+6. Returns one _data.frame_-like object (e.g. _tibble_). 
 
 
 Syntax
 ------
 
+> use_r, _rpath(path/to/r)_
 
 
 Author
