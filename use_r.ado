@@ -126,10 +126,10 @@ program define use_r
 
       // Extract the R chunk
 
-      local rfilename = "st_`filenosuffix'_`chunk_title'.R" 
+      local rfilename = "st_`dofilenosuffix'_`chunk_title'.R" 
       mata: st_local("rfilepath", pathjoin("`rparent'", "`rfilename'"))
 
-      file open rfile using "`rfilepath'", write replace
+      qui file open rfile using "`rfilepath'", write replace
       
       file write rfile "## This file was written by running `do'." _n
       file write rfile "" _n 
@@ -145,7 +145,7 @@ program define use_r
 
       }
 
-      file close rfile
+      qui file close rfile
 
       disp `"`rfilepath' written."'
       
@@ -161,6 +161,45 @@ program define use_r
     file close dofile
   }
 
+
+  // Create a temp R file to run the R file above
+
+  tempname rtemp
+
+  mata: st_local("r_temppath", pathjoin(pwd(), "`rtemp'.R"))
+
+  disp "`rfilepath'"
+
+  file open rtmp using "`r_temppath'", write replace
+
+  file write rtmp `"source("`rfilepath'", echo = TRUE)"' _n
+  file write rtmp _n
+  file write rtmp "obj_data <-" _n
+  file write rtmp "ls()[" _n
+  file write rtmp "sapply(" _n
+  file write rtmp "lapply(" _n
+  file write rtmp "lapply(" _n
+  file write rtmp "lapply(" _n
+  file write rtmp "ls(), as.symbol" _n
+  file write rtmp ")," _n
+  file write rtmp "eval)," _n
+  file write rtmp "class)," _n
+  file write rtmp `"function(x) "data.frame" %in% x)]"' _n
+  file write rtmp `"haven::write_dta(eval(as.symbol(obj_data)), "`datafilepath'")"'
   
+  file close rtmp
+ 
+  // Run the R code
+  // Any side effects will be printed or saved
+  // One data frame should be returned
+  // The returned data frame will be loaded on Stata memory
+
+  shell `rpath' `r_temppath'
+
+  erase "`r_temppath'"
+
+  qui use "`datafilepath'", clear
+
+  disp "New dataset from the R code retrieved"
 
 end
