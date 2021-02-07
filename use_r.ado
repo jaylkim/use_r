@@ -118,7 +118,7 @@ program define use_r
       
       if "`chunk_title'" == "" {
         
-        disp as err "Chunk title not provided."
+        disp as txt "Chunk title not provided"
         
         local current_d = subinstr(c(current_date), " ", "", .)
         local current_t = subinstr(c(current_time), ":", "", .) 
@@ -132,7 +132,7 @@ program define use_r
 
       }
       
-      disp `"R code chunk (`chunk_title') Detected."'
+      disp as txt `"R code chunk (`chunk_title') detected"'
 
 
       // Create dirs if not exist
@@ -149,7 +149,7 @@ program define use_r
       mata: st_local("datafilepath", pathjoin("`datapath'", "`datafilename'"))
       qui save "`datafilepath'", replace 
 
-      disp `"Data for the chunk saved in `datafilepath'."'
+      disp as txt `"Data for the chunk saved in `datafilepath'"'
 
       // Extract the R chunk
 
@@ -159,11 +159,13 @@ program define use_r
       qui file open rfile using "`rfilepath'", write replace
       
       file write rfile "## This file was written by running `do'." _n
-      file write rfile "" _n 
+      file write rfile "" _n(2)
+      file write rfile "## Read the data from Stata" _n
       file write rfile `"data <-"' _n
-      file write rfile _col(2) `"haven::read_dt("' _n
-      file write rfile _col(4) `"`datafilepath'"' _n
+      file write rfile _col(2) `"haven::read_dta("' _n
+      file write rfile _col(4) `""`datafilepath'""' _n
       file write rfile _col(2) ")" _n
+      file write rfile "" _n(3)
 
       file read dofile line
 
@@ -177,7 +179,7 @@ program define use_r
 
       qui file close rfile
 
-      disp `"`rfilepath' written."'
+      disp as txt `"`rfilepath' written"'
       
       continue, break
 
@@ -198,9 +200,7 @@ program define use_r
 
   mata: st_local("r_temppath", pathjoin(pwd(), "`rtemp'.R"))
 
-  disp "`rfilepath'"
-
-  file open rtmp using "`r_temppath'", write replace
+  qui file open rtmp using "`r_temppath'", write replace
 
   file write rtmp `"source("`rfilepath'", echo = TRUE)"' _n
   file write rtmp _n
@@ -230,6 +230,6 @@ program define use_r
 
   qui use "`datafilepath'", clear
 
-  disp "New dataset from the R code retrieved"
+  disp as txt "New dataset from the R code retrieved"
 
 end
