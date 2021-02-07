@@ -20,17 +20,44 @@ This command does the following:
 
 3. Runs the R file.
 
-4. Prints any side effects other than figures and tables.
+4. Prints any side effects other than figures.
 
-5. Saves figures tables.
+5. Saves figures.
 
 6. Returns one _data.frame_-like object (e.g. _tibble_). 
+
+7. Loads the data on Stata memory.
+
+You have to embed this command right before an R code chunk.
+An R code chunk is not supposed to be run by Stata, so you have to
+comment it out with /* */.
+
+An R code chunk have to look like this:
+
+{col 10}~~~r chunk-title
+{col 14}Any R code lines
+{col 10}~~~
+
+The leading part should include a chunk title.
+If not provided, it assigns one based on the current date time
+followed by three random letters.
 
 
 Syntax
 ------
 
-> use_r, _do(path/to/do.do)_ _**r**path(path/to/r)_
+{col 10}use_r, do(path/to/do.do) {ul:r}path(path/to/r)
+
+Options
+-------
+
+1. do: The path to the currently running do file. A relative path is supported.
+
+2. **r**path: The path to the Rscript command path.
+    
+{col 10}- You can get the full path
+{col 14}- {bf:Terminal} (Unix): which Rscript
+{col 14}- {bf:Cmd} (Win): where Rscript
 
 
 Author
