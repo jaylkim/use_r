@@ -160,7 +160,10 @@ program define use_r
       
       file write rfile "## This file was written by running `do'." _n
       file write rfile "" _n 
-      file write rfile `"data <- haven::read_dta("`datafilepath'")"' _n
+      file write rfile `"data <-"' _n
+      file write rfile _col(2) `"haven::read_dt("' _n
+      file write rfile _col(4) `"`datafilepath'"' _n
+      file write rfile _col(2) ")" _n
 
       file read dofile line
 
