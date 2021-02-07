@@ -14,7 +14,7 @@
 {p 4 4 2}
 This command does the following:
 
-{break}    1. Detects an R code chunk right after its call and creates an {bf:.R} file.
+{break}    1. Detects an R code chunk before its call and creates an {bf:.R} file.
 
 {break}    2. Saves the data on memory so that the R file can use it.
 
@@ -34,6 +34,10 @@ An R code chunk is not supposed to be run by Stata, so you have to
 comment it out with /* */.
 
 {p 4 4 2}
+This command detects any R code chunks in order.
+Thus, you may not skip this command after any R code chunk.
+
+{p 4 4 2}
 An R code chunk have to look like this:
 
 {col 10}~~~r chunk-title
@@ -48,6 +52,9 @@ followed by three random letters.
 
 
 {title:Syntax}
+
+{p 4 4 2}
+Put this command right after an R code chunk.
 
 {col 10}use_r, do(path/to/do.do) {ul:r}path(path/to/r)
 
